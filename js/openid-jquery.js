@@ -13,16 +13,16 @@ var providers_large = {
     yahoo: {
         name: 'Yahoo',      
         url: 'http://me.yahoo.com/'
-    },    
+    },
+    myopenid: {
+      name: 'MyOpenID',
+      label: 'Enter your MyOpenID username.',
+      url: 'http://{username}.myopenid.com/'
+    },
     aol: {
         name: 'AOL',     
         label: 'Enter your AOL screenname.',
         url: 'http://openid.aol.com/{username}'
-    },
-    verisign: {
-        name: 'Verisign',
-        label: 'Your Verisign username',
-        url: 'http://{username}.pip.verisignlabs.com/'
     },
     openid: {
         name: 'OpenID',     
@@ -31,26 +31,21 @@ var providers_large = {
     }
 };
 var providers_small = {
-    myopenid: {
-        name: 'MyOpenID',
-        label: 'Enter your MyOpenID username.',
-        url: 'http://{username}.myopenid.com/'
-    },
     livejournal: {
         name: 'LiveJournal',
         label: 'Enter your Livejournal username.',
         url: 'http://{username}.livejournal.com/'
     },
-    flickr: {
+    /* flickr: {
         name: 'Flickr',        
         label: 'Enter your Flickr username.',
         url: 'http://flickr.com/{username}/'
-    },
-    technorati: {
+    }, */
+    /* technorati: {
         name: 'Technorati',
         label: 'Enter your Technorati username.',
         url: 'http://technorati.com/people/technorati/{username}/'
-    },
+    }, */
     wordpress: {
         name: 'Wordpress',
         label: 'Enter your Wordpress.com username.',
@@ -61,20 +56,35 @@ var providers_small = {
         label: 'Your Blogger account',
         url: 'http://{username}.blogspot.com/'
     },
-    vidoop: {
+    verisign: {
+      name: 'Verisign',
+      label: 'Your Verisign username',
+      url: 'http://{username}.pip.verisignlabs.com/'
+    },
+    /* vidoop: {
         name: 'Vidoop',
         label: 'Your Vidoop username',
         url: 'http://{username}.myvidoop.com/'
-    },
-    launchpad: {
+    }, */
+    /* launchpad: {
         name: 'Launchpad',
         label: 'Your Launchpad username',
         url: 'https://launchpad.net/~{username}'
-    },
+    }, */
     claimid: {
         name: 'ClaimID',
         label: 'Your ClaimID username',
         url: 'http://claimid.com/{username}'
+    },
+    clickpass: {
+      name: 'ClickPass',
+      label: 'Enter your ClickPass username',
+      url: 'http://clickpass.com/public/{username}'
+    },
+    google_profile: {
+      name: 'Google_Profile',
+      label: 'Enter your Google Profile username',
+      url: 'http://www.google.com/profiles/{username}'
     }
 };
 var providers = $.extend({}, providers_large, providers_small);
@@ -82,7 +92,6 @@ var providers = $.extend({}, providers_large, providers_small);
 var openid = {
 
 	demo: false,
-	ajaxHandler: null,
 	cookie_expires: 6*30,	// 6 months.
 	cookie_name: 'openid_provider',
 	cookie_path: '/',
@@ -163,10 +172,6 @@ var openid = {
     		url = url.replace('{username}', $('#openid_username').val());
     		openid.setOpenIdUrl(url);
     	}
-    	if(openid.ajaxHandler) {
-    		openid.ajaxHandler(openid.provider_id, document.getElementById(openid.input_id).value);
-    		return false;
-    	}
     	if(openid.demo) {
     		alert("In client demo mode. Normally would have submitted OpenID:\r\n" + document.getElementById(openid.input_id).value);
     		return false;
@@ -238,8 +243,5 @@ var openid = {
     },
     setDemoMode: function (demoMode) {
     	this.demo = demoMode;
-    },
-    setAjaxHandler: function (ajaxFunction) {
-    	this.ajaxHandler = ajaxFunction;
     }
 };
