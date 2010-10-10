@@ -12,17 +12,12 @@ var providers_large = {
     },
     yahoo: {
         name: 'Yahoo',      
-        url: 'http://me.yahoo.com/'
+        url: 'http://yahoo.com/'
     },    
     aol: {
         name: 'AOL',     
         label: 'Enter your AOL screenname.',
-        url: 'http://openid.aol.com/{username}'
-    },
-    verisign: {
-        name: 'Verisign',
-        label: 'Your Verisign username',
-        url: 'http://{username}.pip.verisignlabs.com/'
+        url: 'http://openid.aol.com/{username}/'
     },
     openid: {
         name: 'OpenID',     
@@ -61,15 +56,20 @@ var providers_small = {
         label: 'Your Blogger account',
         url: 'http://{username}.blogspot.com/'
     },
+    verisign: {
+        name: 'Verisign',
+        label: 'Your Verisign username',
+        url: 'http://{username}.pip.verisignlabs.com/'
+    },
     vidoop: {
         name: 'Vidoop',
         label: 'Your Vidoop username',
         url: 'http://{username}.myvidoop.com/'
     },
-    launchpad: {
-        name: 'Launchpad',
-        label: 'Your Launchpad username',
-        url: 'https://launchpad.net/~{username}'
+    verisign: {
+        name: 'Verisign',
+        label: 'Your Verisign username',
+        url: 'http://{username}.pip.verisignlabs.com/'
     },
     claimid: {
         name: 'ClaimID',
@@ -81,8 +81,6 @@ var providers = $.extend({}, providers_large, providers_small);
 
 var openid = {
 
-	demo: false,
-	ajaxHandler: null,
 	cookie_expires: 6*30,	// 6 months.
 	cookie_name: 'openid_provider',
 	cookie_path: '/',
@@ -91,7 +89,6 @@ var openid = {
 	
 	input_id: null,
 	provider_url: null,
-	provider_id: null,
 	
     init: function(input_id) {
         
@@ -112,7 +109,7 @@ var openid = {
         	
 	        for (id in providers_small) {
 	        
-	           	openid_btns.append(this.getBoxHTML(providers_small[id], 'small', '.ico.gif'));
+	           	openid_btns.append(this.getBoxHTML(providers_small[id], 'small', '.ico'));
 	        }
         }
         
@@ -142,17 +139,18 @@ var openid = {
 		this.highlight(box_id);
 		this.setCookie(box_id);
 		
-		this.provider_id = box_id;
-		this.provider_url = provider['url'];
-		
 		// prompt user for input?
 		if (provider['label']) {
+			
 			this.useInputBox(provider);
+			this.provider_url = provider['url'];
+			
 		} else {
-			$('#openid_input_area').empty();
+			
+			this.setOpenIdUrl(provider['url']);
 			if (! onload) {
 				$('#openid_form').submit();
-			}
+			}	
 		}
     },
     /* Sign-in button click */
@@ -163,20 +161,12 @@ var openid = {
     		url = url.replace('{username}', $('#openid_username').val());
     		openid.setOpenIdUrl(url);
     	}
-    	if(openid.ajaxHandler) {
-    		openid.ajaxHandler(openid.provider_id, document.getElementById(openid.input_id).value);
-    		return false;
-    	}
-    	if(openid.demo) {
-    		alert("In client demo mode. Normally would have submitted OpenID:\r\n" + document.getElementById(openid.input_id).value);
-    		return false;
-    	}
     	return true;
     },
     setOpenIdUrl: function (url) {
     
-    	var hidden = document.getElementById(this.input_id);
-    	if (hidden != null) {
+    	var hidden = $('#'+this.input_id);
+    	if (hidden.length > 0) {
     		hidden.value = url;
     	} else {
     		$('#openid_form').append('<input type="hidden" id="' + this.input_id + '" name="' + this.input_id + '" value="'+url+'"/>');
@@ -235,11 +225,5 @@ var openid = {
 		input_area.append(html);
 
 		$('#'+id).focus();
-    },
-    setDemoMode: function (demoMode) {
-    	this.demo = demoMode;
-    },
-    setAjaxHandler: function (ajaxFunction) {
-    	this.ajaxHandler = ajaxFunction;
     }
 };
